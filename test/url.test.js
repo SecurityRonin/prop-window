@@ -1,5 +1,44 @@
 import { describe, it, expect } from 'vitest';
-import { splitScheme, isImageFavicon, escapeHtml } from '../src/url.js';
+import { splitScheme, isImageFavicon, escapeHtml, normalizeUrl } from '../src/url.js';
+
+describe('normalizeUrl', () => {
+  it('keeps a full https URL unchanged', () => {
+    expect(normalizeUrl('https://youtube.com/watch?v=x')).toBe('https://youtube.com/watch?v=x');
+  });
+
+  it('keeps a full http URL unchanged', () => {
+    expect(normalizeUrl('http://localhost:8234/x')).toBe('http://localhost:8234/x');
+  });
+
+  it('prepends https:// to a bare domain', () => {
+    expect(normalizeUrl('youtube.com')).toBe('https://youtube.com');
+  });
+
+  it('prepends https:// to a host:port/path (not mistaking the port for a scheme)', () => {
+    expect(normalizeUrl('localhost:8234/x')).toBe('https://localhost:8234/x');
+  });
+
+  it('prepends https:// to a www path', () => {
+    expect(normalizeUrl('www.google.com/search?q=a')).toBe('https://www.google.com/search?q=a');
+  });
+
+  it('trims surrounding whitespace', () => {
+    expect(normalizeUrl('  example.com  ')).toBe('https://example.com');
+  });
+
+  it('leaves opaque schemes (about:, data:, file:) untouched', () => {
+    expect(normalizeUrl('about:blank')).toBe('about:blank');
+    expect(normalizeUrl('file:///tmp/x.html')).toBe('file:///tmp/x.html');
+  });
+
+  it('returns empty string for empty input', () => {
+    expect(normalizeUrl('   ')).toBe('');
+  });
+
+  it('coerces a non-string input', () => {
+    expect(normalizeUrl(123)).toBe('https://123');
+  });
+});
 
 describe('splitScheme', () => {
   it('splits an https URL into scheme + rest', () => {

@@ -24,6 +24,20 @@ FULLSCREEN=1 npm start
 The window is a real browser rendering `LOAD_URL`; the toolbar shows `DISPLAY_URL`. In
 fullscreen there's no real browser chrome on screen — only the one we draw.
 
+### macOS: one-time trust step
+
+macOS XProtect currently false-positives on unsigned Electron dev binaries (the same alert
+that hit ChatGPT, Cursor, and Codex in 2026) and moves them to Trash. To run your own local
+build, ad-hoc sign it once after install:
+
+```bash
+npm run mac:trust   # clears the download-quarantine flag and ad-hoc signs the local build
+npm start
+```
+
+This only affects this project's local copy — it changes no system settings. Signed,
+notarized distribution builds are deferred (see CHANGELOG).
+
 ## Why not an extension or a Chromium fork?
 
 - **An extension can't do it.** Browsers forbid extensions from writing an arbitrary value

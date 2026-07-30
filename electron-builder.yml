@@ -3,17 +3,30 @@ productName: prop-browser
 copyright: © 2026 Albert Hui
 directories:
   output: dist
+  buildResources: build
 files:
   - electron/**
   - src/**
   - package.json
-# Unsigned builds for now. Code signing + notarization (macOS) and Authenticode
-# (Windows) are deferred — see CHANGELOG "Deferred".
+
+# macOS: Developer-ID sign + notarize + staple (the timeglyph model, done by
+# electron-builder). Signing runs only when the MACOS_* secrets exist; the
+# release workflow overrides `identity`/`notarize` to skip cleanly otherwise, so
+# an unsigned dev build still packages. See docs/macos-signing.md.
 mac:
-  target: dmg
+  target:
+    - dmg
+    - zip
   category: public.app-category.utilities
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  notarize: true
+
 win:
   target: nsis
+
 linux:
   target: AppImage
   category: Utility

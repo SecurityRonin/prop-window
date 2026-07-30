@@ -1,6 +1,10 @@
 # A signed, annotated `v[0-9]*` tag builds the app for macOS/Windows/Linux and
-# attaches the installers to a GitHub Release. Builds are currently UNSIGNED
-# (see CHANGELOG "Deferred" for signing/notarization).
+# attaches the installers to a GitHub Release.
+#
+# macOS signing + notarization (the timeglyph model) is GATED on the MACOS_*
+# secrets: the app ships UNSIGNED until they exist, then the next release
+# Developer-ID-signs + notarizes + staples the .app automatically. See
+# docs/macos-signing.md. (Windows Authenticode is still deferred — see CHANGELOG.)
 name: Release
 
 on:
@@ -10,6 +14,10 @@ on:
 
 permissions:
   contents: write
+
+# Presence flag: the macOS signing path runs only once the cert secret is set.
+env:
+  HAS_MACOS_SIGNING: ${{ secrets.MACOS_CERT_P12_BASE64 != '' }}
 
 jobs:
   build:
@@ -25,12 +33,36 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+
+      - name: Prepare macOS notary key
+        if: runner.os == 'macOS' && env.HAS_MACOS_SIGNING == 'true'
+        run: echo "${{ secrets.MACOS_NOTARY_KEY_P8_BASE64 }}" | base64 -d > "$RUNNER_TEMP/notary.p8"
+
       - name: Build installers
-        run: npx electron-builder --publish never
+        shell: bash
+        env:
+          # Signing/notarization inputs (empty on the unsigned path — ignored there).
+          CSC_LINK: ${{ secrets.MACOS_CERT_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          APPLE_API_KEY: ${{ runner.temp }}/notary.p8
+          APPLE_API_KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
+          APPLE_TEAM_ID: ${{ secrets.MACOS_TEAM_ID }}
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ] && [ "$HAS_MACOS_SIGNING" != "true" ]; then
+            # No signing secrets yet → build unsigned, skip notarization cleanly.
+            npx electron-builder --mac --publish never -c.mac.notarize=false -c.mac.identity=null
+          elif [ "$RUNNER_OS" = "macOS" ]; then
+            npx electron-builder --mac --publish never
+          else
+            npx electron-builder --publish never
+          fi
+
       - name: Attach to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/*.dmg
+            dist/*.zip
             dist/*.exe
             dist/*.AppImage

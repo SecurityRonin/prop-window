@@ -35,6 +35,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - macOS Signing: macos-signing.md
   - Privacy Policy: privacy.md
   - Terms of Service: terms.md
 

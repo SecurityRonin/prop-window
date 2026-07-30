@@ -17,7 +17,11 @@ All notable changes to this project are documented here. The format follows
 - CI (lint + format + 100% coverage gate), MkDocs → Pages, and a tag-driven multi-OS release
   workflow (electron-builder).
 
+- **macOS signing + notarization** wired (electron-builder, Developer-ID + App Store Connect
+  API notarization + staple), gated on the `MACOS_*` secrets — ships unsigned until they exist.
+  See `docs/macos-signing.md`.
+
 ### Deferred
 
-- **Code signing / notarization** — macOS (Developer ID + notarytool) and Windows
-  (Authenticode). Release artifacts are currently unsigned.
+- **Windows Authenticode** signing — release `.exe` is currently unsigned.
+- **Homebrew Cask** auto-publish to a personal tap (recipe documented; tap repo pending).

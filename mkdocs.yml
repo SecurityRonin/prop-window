@@ -1,0 +1,42 @@
+site_name: prop-browser
+site_url: https://h4x0r.github.io/prop-browser/
+repo_url: https://github.com/h4x0r/prop-browser
+repo_name: h4x0r/prop-browser
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - content.code.copy
+    - navigation.top
+    - search.highlight
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.superfences
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Privacy Policy: privacy.md
+  - Terms of Service: terms.md
+
+plugins:
+  - search

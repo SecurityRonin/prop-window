@@ -1,0 +1,76 @@
+# prop-browser
+
+[![CI](https://github.com/h4x0r/prop-browser/actions/workflows/ci.yml/badge.svg)](https://github.com/h4x0r/prop-browser/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/h4x0r/prop-browser/actions/workflows/ci.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/Sponsor-h4x0r-ea4aaa?logo=githubsponsors)](https://github.com/sponsors/h4x0r)
+
+**A film prop browser: put any URL on camera, no matter where the page comes from.**
+
+Real Chromium (Electron), with a Chrome-style chrome we draw ourselves — so the address
+bar shows whatever you tell it, fully decoupled from the page actually loaded. Point it at
+a local mock or a live site; the bar reads `https://www.yourfilm.example` with a padlock.
+
+```bash
+git clone https://github.com/h4x0r/prop-browser
+cd prop-browser && npm install
+
+# Load any content, show any URL on camera:
+DISPLAY_URL="https://www.peanutforum.com/thread/48213" \
+LOAD_URL="http://localhost:8234/forum.html" \
+FULLSCREEN=1 npm start
+```
+
+The window is a real browser rendering `LOAD_URL`; the toolbar shows `DISPLAY_URL`. In
+fullscreen there's no real browser chrome on screen — only the one we draw.
+
+## Why not an extension or a Chromium fork?
+
+- **An extension can't do it.** Browsers forbid extensions from writing an arbitrary value
+  into the omnibox — the address bar always reflects the page's true origin. That's an
+  anti-phishing rule with no override.
+- **A Chromium source fork is the wrong tool.** Patching the omnibox means editing
+  security-critical navigation C++, a ~100 GB tree, and multi-hour builds.
+- **Electron _is_ Chrome.** Same engine, packaged so we own the window chrome. The content
+  is a real top-level `BrowserView` (not an `<iframe>`), so it loads **any** site — external
+  ones included — with no `X-Frame-Options` limits, while the address bar stays under our
+  control.
+
+## Configure per shot (environment variables)
+
+| Var                | Meaning                                      | Default                   |
+| ------------------ | -------------------------------------------- | ------------------------- |
+| `LOAD_URL`         | content actually fetched                     | bundled welcome page      |
+| `DISPLAY_URL`      | URL shown in the address bar (the spoof)     | `https://www.example.com` |
+| `TITLE`            | tab title                                    | `New Tab`                 |
+| `FAVICON`          | emoji, or an image URL                       | `🌐`                      |
+| `SECURE`           | `0` → "Not secure"; else padlock             | padlock                   |
+| `FULLSCREEN`       | `1` → fullscreen (only our chrome on camera) | off                       |
+| `KIOSK`            | `1` → kiosk (no escape chrome)               | off                       |
+| `WIDTH` / `HEIGHT` | windowed size                                | `1440` × `900`            |
+
+## On-set controls
+
+- **Address bar is the spoof control.** Click it and type any URL.
+  - **Enter** → set the _displayed_ URL (content unchanged) — the spoof.
+  - **Shift+Enter** → actually navigate the content to the typed URL.
+- **Back / Forward / Reload** drive the real content view.
+- The top strip is a window-drag handle when not fullscreen.
+
+## Trust but verify
+
+- **Tested logic ships.** The URL parsing, favicon detection, config, and Enter-key
+  semantics live in `src/` under **100% line/branch/function coverage** (vitest), and the
+  preload exposes those _same_ functions to the renderer — no untested copy in the HTML.
+- **Humble Object shell.** The Electron layer (`electron/*`) carries no decisions, so it
+  stays a thin, reviewable shell over Chromium.
+
+## What this is — and isn't
+
+A **stage prop**: a picture of a browser, for a camera. It performs no network deception —
+the address bar is a widget we draw, so there is nothing intercepted or forged on the wire.
+Use it for filming and demos.
+
+---
+
+[Privacy Policy](https://h4x0r.github.io/prop-browser/privacy/) · [Terms of Service](https://h4x0r.github.io/prop-browser/terms/) · © 2026 Albert Hui

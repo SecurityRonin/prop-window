@@ -1,0 +1,31 @@
+# Actions are tag-pinned here; renovate.json (helpers:pinGitHubActionDigests)
+# converts them to full commit SHAs on its first run and keeps them current.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install (skip Electron binary — unit tests don't need it)
+        run: npm ci
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      - name: Format check
+        run: npx prettier --check .
+      - name: Lint
+        run: npx eslint .
+      - name: Test with 100% coverage gate
+        run: npx vitest run --coverage

@@ -1,29 +1,65 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<title>prop-browser</title>
-<style>
-  html,body{margin:0;height:100%;background:#0f1115;color:#e6e8ec;
-    font-family:-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;
-    display:flex;align-items:center;justify-content:center}
-  .card{max-width:560px;padding:40px;text-align:center}
-  .logo{font-size:56px;margin-bottom:8px}
-  h1{font-size:22px;margin:0 0 6px}
-  p{color:#9aa0a6;line-height:1.6;font-size:14px}
-  code{background:#1b1f27;color:#cdd6e4;padding:2px 7px;border-radius:5px;font-size:12.5px}
-  .hint{margin-top:22px;font-size:12.5px;color:#6b7280}
-</style>
-</head>
-<body>
-  <div class="card">
-    <div class="logo">🌐</div>
-    <h1>prop-browser</h1>
-    <p>A film prop browser: the address bar shows any URL you set, decoupled from the
-       page it loads. Point it at content with <code>LOAD_URL</code> and set the
-       on-camera URL with <code>DISPLAY_URL</code>.</p>
-    <p class="hint">Click the address bar and type any URL — <b>Enter</b> spoofs the shown URL,
-       <b>Shift+Enter</b> actually navigates. See the README for all options.</p>
-  </div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>prop-browser</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #0f1115;
+        color: #e6e8ec;
+        font-family: -apple-system, 'Segoe UI', Roboto, system-ui, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .card {
+        max-width: 560px;
+        padding: 40px;
+        text-align: center;
+      }
+      .logo {
+        font-size: 56px;
+        margin-bottom: 8px;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0 0 6px;
+      }
+      p {
+        color: #9aa0a6;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+      code {
+        background: #1b1f27;
+        color: #cdd6e4;
+        padding: 2px 7px;
+        border-radius: 5px;
+        font-size: 12.5px;
+      }
+      .hint {
+        margin-top: 22px;
+        font-size: 12.5px;
+        color: #6b7280;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="logo">🌐</div>
+      <h1>prop-browser</h1>
+      <p>
+        A film prop browser: the address bar shows any URL you set, decoupled from the page it
+        loads. Point it at content with <code>LOAD_URL</code> and set the on-camera URL with
+        <code>DISPLAY_URL</code>.
+      </p>
+      <p class="hint">
+        Click the address bar and type any URL — <b>Enter</b> spoofs the shown URL,
+        <b>Shift+Enter</b> actually navigates. See the README for all options.
+      </p>
+    </div>
+  </body>
 </html>

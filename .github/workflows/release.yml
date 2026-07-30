@@ -1,0 +1,36 @@
+# A signed, annotated `v[0-9]*` tag builds the app for macOS/Windows/Linux and
+# attaches the installers to a GitHub Release. Builds are currently UNSIGNED
+# (see CHANGELOG "Deferred" for signing/notarization).
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Build installers
+        run: npx electron-builder --publish never
+      - name: Attach to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.dmg
+            dist/*.exe
+            dist/*.AppImage

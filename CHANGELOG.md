@@ -14,3 +14,10 @@ All notable changes to this project are documented here. The format follows
   test coverage.
 - Environment-variable configuration (`LOAD_URL`, `DISPLAY_URL`, `TITLE`, `FAVICON`, `SECURE`,
   `FULLSCREEN`, `KIOSK`, `WIDTH`, `HEIGHT`).
+- CI (lint + format + 100% coverage gate), MkDocs → Pages, and a tag-driven multi-OS release
+  workflow (electron-builder).
+
+### Deferred
+
+- **Code signing / notarization** — macOS (Developer ID + notarytool) and Windows
+  (Authenticode). Release artifacts are currently unsigned.

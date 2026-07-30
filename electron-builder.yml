@@ -1,0 +1,19 @@
+appId: dev.h4x0r.prop-browser
+productName: prop-browser
+copyright: © 2026 Albert Hui
+directories:
+  output: dist
+files:
+  - electron/**
+  - src/**
+  - package.json
+# Unsigned builds for now. Code signing + notarization (macOS) and Authenticode
+# (Windows) are deferred — see CHANGELOG "Deferred".
+mac:
+  target: dmg
+  category: public.app-category.utilities
+win:
+  target: nsis
+linux:
+  target: AppImage
+  category: Utility

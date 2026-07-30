@@ -23,7 +23,14 @@ describe('parseConfig', () => {
   it('lets injected defaults override the built-ins', () => {
     const cfg = parseConfig(
       {},
-      { load: 'file:///forum.html', display: 'https://d', title: 'T', favicon: '🥜', width: 800, height: 600 },
+      {
+        load: 'file:///forum.html',
+        display: 'https://d',
+        title: 'T',
+        favicon: '🥜',
+        width: 800,
+        height: 600,
+      },
     );
     expect(cfg).toMatchObject({
       load: 'file:///forum.html',

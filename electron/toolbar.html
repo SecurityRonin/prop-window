@@ -406,7 +406,7 @@
       $('#wc-max').onclick = () => window.prop.win('max');
       $('#wc-close').onclick = () => window.prop.win('close');
 
-      // Address bar = the spoof control.
+      // Address bar: Enter navigates to the real site; Shift+Enter spoofs the shown URL.
       const bar = $('#urltext');
       bar.addEventListener('focus', () => {
         bar.textContent = bar.textContent; // flatten styled spans to editable text
@@ -416,9 +416,14 @@
         const action = U.classifyEnter(e);
         if (!action) return;
         e.preventDefault();
-        const txt = bar.textContent.trim();
-        if (action === 'navigate') window.prop.nav('go', txt);
-        renderUrl(txt);
+        const raw = bar.textContent.trim();
+        if (action === 'navigate') {
+          const url = U.normalizeUrl(raw); // add https:// to a bare domain
+          if (url) window.prop.nav('go', url);
+          renderUrl(url); // show the real URL we navigated to
+        } else {
+          renderUrl(raw); // spoof: show exactly what was typed, don't navigate
+        }
         bar.blur();
       });
     </script>

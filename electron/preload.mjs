@@ -3,13 +3,14 @@
 // no duplicated, untested copy in the HTML.
 
 import { contextBridge, ipcRenderer } from 'electron';
-import { splitScheme, isImageFavicon, escapeHtml } from '../src/url.js';
+import { splitScheme, isImageFavicon, escapeHtml, normalizeUrl } from '../src/url.js';
 import { classifyEnter } from '../src/keymap.js';
 
 contextBridge.exposeInMainWorld('propURL', {
   splitScheme,
   isImageFavicon,
   escapeHtml,
+  normalizeUrl,
   classifyEnter,
 });
 

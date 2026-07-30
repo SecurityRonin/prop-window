@@ -1,0 +1,106 @@
+import { describe, it, expect } from 'vitest';
+import { parseConfig } from '../src/config.js';
+
+describe('parseConfig', () => {
+  it('applies built-in defaults for an empty environment', () => {
+    expect(parseConfig({}, {})).toEqual({
+      load: '',
+      display: 'https://www.example.com',
+      title: 'New Tab',
+      favicon: '🌐',
+      secure: true,
+      fullscreen: false,
+      kiosk: false,
+      width: 1440,
+      height: 900,
+    });
+  });
+
+  it('works with no arguments at all', () => {
+    expect(parseConfig().display).toBe('https://www.example.com');
+  });
+
+  it('lets injected defaults override the built-ins', () => {
+    const cfg = parseConfig(
+      {},
+      { load: 'file:///forum.html', display: 'https://d', title: 'T', favicon: '🥜', width: 800, height: 600 },
+    );
+    expect(cfg).toMatchObject({
+      load: 'file:///forum.html',
+      display: 'https://d',
+      title: 'T',
+      favicon: '🥜',
+      width: 800,
+      height: 600,
+    });
+  });
+
+  it('lets environment variables override everything', () => {
+    const cfg = parseConfig({
+      LOAD_URL: 'http://localhost:8234/x.html',
+      DISPLAY_URL: 'https://www.peanutforum.com/thread/48213',
+      TITLE: 'kidkit727',
+      FAVICON: '🌰',
+    });
+    expect(cfg).toMatchObject({
+      load: 'http://localhost:8234/x.html',
+      display: 'https://www.peanutforum.com/thread/48213',
+      title: 'kidkit727',
+      favicon: '🌰',
+    });
+  });
+
+  describe('secure', () => {
+    it('defaults to true', () => {
+      expect(parseConfig({}).secure).toBe(true);
+    });
+    it('is false only for the literal "0"', () => {
+      expect(parseConfig({ SECURE: '0' }).secure).toBe(false);
+    });
+    it('is true for "1"', () => {
+      expect(parseConfig({ SECURE: '1' }).secure).toBe(true);
+    });
+    it('is true for any other value', () => {
+      expect(parseConfig({ SECURE: 'yes' }).secure).toBe(true);
+    });
+  });
+
+  describe('fullscreen / kiosk', () => {
+    it('FULLSCREEN=1 sets fullscreen but not kiosk', () => {
+      const c = parseConfig({ FULLSCREEN: '1' });
+      expect(c.fullscreen).toBe(true);
+      expect(c.kiosk).toBe(false);
+    });
+    it('KIOSK=1 implies fullscreen and kiosk', () => {
+      const c = parseConfig({ KIOSK: '1' });
+      expect(c.fullscreen).toBe(true);
+      expect(c.kiosk).toBe(true);
+    });
+    it('neither set stays windowed', () => {
+      const c = parseConfig({});
+      expect(c.fullscreen).toBe(false);
+      expect(c.kiosk).toBe(false);
+    });
+    it('FULLSCREEN=0 is not fullscreen', () => {
+      expect(parseConfig({ FULLSCREEN: '0' }).fullscreen).toBe(false);
+    });
+  });
+
+  describe('width / height', () => {
+    it('parses valid integers', () => {
+      const c = parseConfig({ WIDTH: '1280', HEIGHT: '720' });
+      expect(c.width).toBe(1280);
+      expect(c.height).toBe(720);
+    });
+    it('falls back for non-numeric input', () => {
+      expect(parseConfig({ WIDTH: 'abc' }).width).toBe(1440);
+    });
+    it('falls back for a non-positive value', () => {
+      expect(parseConfig({ WIDTH: '-5' }).width).toBe(1440);
+      expect(parseConfig({ HEIGHT: '0' }).height).toBe(900);
+    });
+    it('honours an injected default dimension on fallback', () => {
+      expect(parseConfig({ WIDTH: 'x' }, { width: 1024 }).width).toBe(1024);
+    });
+  });
+});

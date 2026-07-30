@@ -20,7 +20,7 @@ export default [
   },
   {
     // Electron main/preload run in Node.
-    files: ['electron/main.js', 'electron/preload.js'],
+    files: ['electron/main.js', 'electron/preload.mjs'],
     languageOptions: { globals: { ...globals.node } },
   },
   {

@@ -34,7 +34,7 @@ app.whenReady().then(() => {
     kiosk: cfg.kiosk,
     backgroundColor: '#dee1e6',
     webPreferences: {
-      preload: join(here, 'preload.js'),
+      preload: join(here, 'preload.mjs'),
       contextIsolation: true,
       sandbox: false, // required for an ESM preload
       nodeIntegration: false,

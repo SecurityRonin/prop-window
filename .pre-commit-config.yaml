@@ -1,0 +1,28 @@
+# Pre-commit ⇄ CI parity: these run the same fmt/lint/test the CI gate enforces,
+# so a green local commit means a green CI run.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier (check)
+        entry: npx --no-install prettier --check .
+        language: system
+        pass_filenames: false
+      - id: eslint
+        name: eslint
+        entry: npx --no-install eslint .
+        language: system
+        pass_filenames: false
+      - id: vitest
+        name: vitest (with coverage gate)
+        entry: npx --no-install vitest run --coverage
+        language: system
+        pass_filenames: false

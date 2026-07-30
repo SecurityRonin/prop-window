@@ -1,0 +1,43 @@
+{
+  "name": "prop-browser",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A film prop browser — real Chromium (Electron) whose address bar shows any URL you set, fully decoupled from the page it loads.",
+  "type": "module",
+  "main": "electron/main.js",
+  "author": "Albert Hui <albert.hui@gmail.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/h4x0r/prop-browser",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/h4x0r/prop-browser.git"
+  },
+  "bugs": {
+    "url": "https://github.com/h4x0r/prop-browser/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "electron": "^31.7.7",
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "vitest": "^2.1.8"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true
+  }
+}

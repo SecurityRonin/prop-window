@@ -1,0 +1,32 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true,
+    "schedule": ["before 6am on monday"]
+  },
+  "packageRules": [
+    {
+      "description": "GitHub Actions: keep digests pinned and current; auto-merge digest/patch/minor.",
+      "matchManagers": ["github-actions"],
+      "automerge": true,
+      "automergeType": "pr",
+      "matchUpdateTypes": ["digest", "patch", "minor"]
+    },
+    {
+      "description": "npm deps for this APP: group weekly, auto-merge patch/minor (an app has no downstream MSRV promise to protect).",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "groupName": "npm deps",
+      "schedule": ["before 6am on monday"]
+    },
+    {
+      "description": "npm major: human review (possible API breaks / Electron majors need testing).",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    }
+  ]
+}

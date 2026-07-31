@@ -1,16 +1,28 @@
-# A signed, annotated `v[0-9]*` tag builds the app for macOS/Windows/Linux and
-# attaches the installers to a GitHub Release.
+# A signed, annotated `v[0-9]*` tag builds the Electron app for macOS/Windows/Linux
+# and attaches the installers to a GitHub Release.
 #
 # macOS signing + notarization (the timeglyph model) is GATED on the MACOS_*
 # secrets: the app ships UNSIGNED until they exist, then the next release
 # Developer-ID-signs + notarizes + staples the .app automatically. See
 # docs/macos-signing.md. (Windows Authenticode is still deferred — see CHANGELOG.)
+#
+# Distribution fan-out (Homebrew Cask / apt-Cloudsmith / winget) is wired below
+# but DORMANT until these prerequisites exist — each is gated by a secret and an
+# external feed/repo that must be created FIRST:
+#   - secrets.TAP_GITHUB_TOKEN   + h4x0r/homebrew-tap with a
+#                                  Casks/prop-browser.rb and an `update-prop-browser`
+#                                  repository_dispatch handler.
+#   - secrets.CLOUDSMITH_API_KEY + a Cloudsmith repo `h4x0r/prop-browser`
+#                                  (must be created or the push 404s).
+#   - secrets.WINGET_TOKEN       + the package bootstrapped in winget-pkgs
+#                                  (first submission is a manual PR) and a bot fork.
+# The homebrew/winget/cloudsmith steps are `continue-on-error` so a release never
+# fails on a not-yet-provisioned channel.
 name: Release
 
 on:
   push:
-    tags:
-      - 'v[0-9]*'
+    tags: ["v[0-9]*"]
 
 permissions:
   contents: write
@@ -27,8 +39,8 @@ jobs:
         os: [macos-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -41,7 +53,6 @@ jobs:
       - name: Build installers
         shell: bash
         env:
-          # Signing/notarization inputs (empty on the unsigned path — ignored there).
           CSC_LINK: ${{ secrets.MACOS_CERT_P12_BASE64 }}
           CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
           APPLE_API_KEY: ${{ runner.temp }}/notary.p8
@@ -58,11 +69,109 @@ jobs:
             npx electron-builder --publish never
           fi
 
-      - name: Attach to GitHub Release
-        uses: softprops/action-gh-release@v2
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          files: |
+          name: dist-${{ matrix.os }}
+          path: |
             dist/*.dmg
             dist/*.zip
             dist/*.exe
             dist/*.AppImage
+            dist/*.deb
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          path: artifacts
+          pattern: "dist-*"
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          sha256sum * > checksums.txt
+          cat checksums.txt
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@1c608d11d69870c2092266b3f9a6f3abbf17002c # v1.4.3
+        with:
+          subject-path: |
+            artifacts/*.dmg
+            artifacts/*.zip
+            artifacts/*.exe
+            artifacts/*.AppImage
+            artifacts/*.deb
+            artifacts/checksums.txt
+
+      - name: Create release
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
+        with:
+          files: |
+            artifacts/*.dmg
+            artifacts/*.zip
+            artifacts/*.exe
+            artifacts/*.AppImage
+            artifacts/*.deb
+            artifacts/checksums.txt
+          generate_release_notes: true
+
+      # Homebrew Cask: notify the tap to refresh Casks/prop-browser.rb for this
+      # version. GUI app → Cask (installs the .dmg to /Applications), not a Formula.
+      # The .dmg must be notarized or Gatekeeper blocks it on install.
+      - name: Dispatch to homebrew tap
+        continue-on-error: true
+        uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3.0.0
+        with:
+          token: ${{ secrets.TAP_GITHUB_TOKEN }}
+          repository: h4x0r/homebrew-tap
+          event-type: update-prop-browser
+          client-payload: '{"version": "${{ github.ref_name }}"}'
+
+  # winget: update the package with the new Windows NSIS .exe installer.
+  # vedantmgoyal9/winget-releaser CANNOT create a new package — it only bumps an
+  # existing one. The first version must be a manual submission to winget-pkgs.
+  # continue-on-error keeps a bad winget run from failing the tag.
+  winget:
+    needs: release
+    runs-on: windows-latest
+    continue-on-error: true
+    steps:
+      - uses: vedantmgoyal9/winget-releaser@4ffc7888bffd451b357355dc214d43bb9f23917e # v2
+        with:
+          identifier: h4x0r.prop-browser
+          installers-regex: '\.exe$'
+          token: ${{ secrets.WINGET_TOKEN }}
+
+  # apt: push the .deb from the Linux build to a Cloudsmith apt repo so users can
+  # `apt install prop-browser` after adding the repo. Gated on CLOUDSMITH_API_KEY.
+  cloudsmith:
+    needs: release
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: "dist-ubuntu-*"
+          path: debs
+          merge-multiple: true
+
+      - name: Install Cloudsmith CLI
+        run: |
+          pip install --user cloudsmith-cli==1.16.0
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Push .deb to Cloudsmith
+        env:
+          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+        run: |
+          for deb in debs/*.deb; do
+            [ -f "$deb" ] || continue
+            cloudsmith push deb h4x0r/prop-browser/any-distro/any-version "$deb"
+          done

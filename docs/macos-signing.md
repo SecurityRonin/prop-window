@@ -16,10 +16,11 @@ exist. The moment all six are set, the next `v[0-9]*` tag signs + notarizes auto
 
 ### 1. Apple Developer Program membership ($99/yr)
 
-Enrol at [developer.apple.com](https://developer.apple.com/programs/) — an **individual**
-account under _Albert Hui_ is fine for a personal project (org enrolment needs a D-U-N-S number;
-only do that if you want the publisher to read as a company). Note your **Team ID** (10 chars,
-e.g. `AB12CD34EF`) under Membership.
+Enrol / sign in at [developer.apple.com](https://developer.apple.com/programs/) with the Apple ID
+**`info@securityronin.com`** — the account that holds this project's membership, Developer ID
+certificate, and notary key. An **individual** account is fine for a personal project (org
+enrolment needs a D-U-N-S number; only do that if you want the publisher to read as a company).
+Note your **Team ID** (10 chars, e.g. `AB12CD34EF`) under Membership.
 
 ### 2. Developer ID Application certificate
 

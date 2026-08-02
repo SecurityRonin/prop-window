@@ -7,13 +7,13 @@
   "main": "electron/main.js",
   "author": "Albert Hui <albert.hui@gmail.com>",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/h4x0r/prop-browser",
+  "homepage": "https://github.com/SecurityRonin/prop-browser",
   "repository": {
     "type": "git",
-    "url": "https://github.com/h4x0r/prop-browser.git"
+    "url": "https://github.com/SecurityRonin/prop-browser.git"
   },
   "bugs": {
-    "url": "https://github.com/h4x0r/prop-browser/issues"
+    "url": "https://github.com/SecurityRonin/prop-browser/issues"
   },
   "engines": {
     "node": ">=20"

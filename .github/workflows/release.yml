@@ -9,13 +9,14 @@
 # Distribution fan-out (Homebrew Cask / apt-Cloudsmith / winget) is wired below
 # but DORMANT until these prerequisites exist — each is gated by a secret and an
 # external feed/repo that must be created FIRST:
-#   - secrets.TAP_GITHUB_TOKEN   + h4x0r/homebrew-tap with a
+#   - secrets.TAP_GITHUB_TOKEN   + SecurityRonin/homebrew-tap with a
 #                                  Casks/prop-browser.rb and an `update-prop-browser`
 #                                  repository_dispatch handler.
-#   - secrets.CLOUDSMITH_API_KEY + a Cloudsmith repo `h4x0r/prop-browser`
+#   - secrets.CLOUDSMITH_API_KEY + a Cloudsmith repo `securityronin/prop-browser`
 #                                  (must be created or the push 404s).
 #   - secrets.WINGET_TOKEN       + the package bootstrapped in winget-pkgs
-#                                  (first submission is a manual PR) and a bot fork.
+#                                  (first submission is a manual PR) and a
+#                                  `securityronin-bot` fork.
 # The homebrew/winget/cloudsmith steps are `continue-on-error` so a release never
 # fails on a not-yet-provisioned channel.
 name: Release
@@ -58,7 +59,6 @@ jobs:
           APPLE_API_KEY: ${{ runner.temp }}/notary.p8
           APPLE_API_KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
-          APPLE_TEAM_ID: ${{ secrets.MACOS_TEAM_ID }}
         run: |
           if [ "$RUNNER_OS" = "macOS" ] && [ "$HAS_MACOS_SIGNING" != "true" ]; then
             # No signing secrets yet → build unsigned, skip notarization cleanly.
@@ -130,7 +130,7 @@ jobs:
         uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3.0.0
         with:
           token: ${{ secrets.TAP_GITHUB_TOKEN }}
-          repository: h4x0r/homebrew-tap
+          repository: SecurityRonin/homebrew-tap
           event-type: update-prop-browser
           client-payload: '{"version": "${{ github.ref_name }}"}'
 
@@ -145,7 +145,8 @@ jobs:
     steps:
       - uses: vedantmgoyal9/winget-releaser@4ffc7888bffd451b357355dc214d43bb9f23917e # v2
         with:
-          identifier: h4x0r.prop-browser
+          identifier: SecurityRonin.prop-browser
+          fork-user: securityronin-bot
           installers-regex: '\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}
 
@@ -173,5 +174,5 @@ jobs:
         run: |
           for deb in debs/*.deb; do
             [ -f "$deb" ] || continue
-            cloudsmith push deb h4x0r/prop-browser/any-distro/any-version "$deb"
+            cloudsmith push deb securityronin/prop-browser/any-distro/any-version "$deb"
           done

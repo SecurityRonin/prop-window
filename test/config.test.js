@@ -93,6 +93,51 @@ describe('parseConfig', () => {
     });
   });
 
+  describe('scene overrides', () => {
+    it('scene fields override injected defaults', () => {
+      const scene = { loadUrl: 'http://mock:3000', displayUrl: 'https://brand.com', title: 'Brand' };
+      const cfg = parseConfig({}, {}, scene);
+      expect(cfg.load).toBe('http://mock:3000');
+      expect(cfg.display).toBe('https://brand.com');
+      expect(cfg.title).toBe('Brand');
+    });
+
+    it('env vars still override scene fields', () => {
+      const scene = { displayUrl: 'https://scene.com' };
+      const cfg = parseConfig({ DISPLAY_URL: 'https://env.com' }, {}, scene);
+      expect(cfg.display).toBe('https://env.com');
+    });
+
+    it('scene fields not provided fall through to defaults', () => {
+      const scene = { title: 'Only Title' };
+      const cfg = parseConfig({}, {}, scene);
+      expect(cfg.display).toBe('https://www.example.com');
+      expect(cfg.title).toBe('Only Title');
+    });
+
+    it('scene secure=false overrides the default true', () => {
+      const cfg = parseConfig({}, {}, { secure: false });
+      expect(cfg.secure).toBe(false);
+    });
+
+    it('scene fullscreen/kiosk booleans are respected', () => {
+      const cfg = parseConfig({}, {}, { fullscreen: true, kiosk: false });
+      expect(cfg.fullscreen).toBe(true);
+      expect(cfg.kiosk).toBe(false);
+    });
+
+    it('scene width/height override defaults', () => {
+      const cfg = parseConfig({}, {}, { width: 1920, height: 1080 });
+      expect(cfg.width).toBe(1920);
+      expect(cfg.height).toBe(1080);
+    });
+
+    it('works with no scene (backwards compatible)', () => {
+      const cfg = parseConfig({}, {});
+      expect(cfg.display).toBe('https://www.example.com');
+    });
+  });
+
   describe('width / height', () => {
     it('parses valid integers', () => {
       const c = parseConfig({ WIDTH: '1280', HEIGHT: '720' });

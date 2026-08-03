@@ -19,19 +19,39 @@ function positiveIntOr(value, fallback) {
 /**
  * @param {Record<string,string>} env      process.env (or a subset)
  * @param {object} defaults                 overrides for the built-in defaults
+ * @param {object} [scene]                  scene file fields (override defaults, env overrides scene)
  * @returns normalized config consumed by the Electron shell
  */
-export function parseConfig(env = {}, defaults = {}) {
+export function parseConfig(env = {}, defaults = {}, scene = {}) {
+  const s = scene || {};
   const d = { ...BUILTINS, ...defaults };
+
+  const load = env.LOAD_URL || s.loadUrl || d.load;
+  const display = env.DISPLAY_URL || s.displayUrl || d.display;
+  const title = env.TITLE || s.title || d.title;
+  const favicon = env.FAVICON || s.favicon || d.favicon;
+
+  const secureFromScene = s.secure !== undefined ? s.secure : true;
+  const secure = 'SECURE' in env ? env.SECURE !== '0' : secureFromScene;
+
+  const fsEnv = env.FULLSCREEN === '1' || env.KIOSK === '1';
+  const kioskEnv = env.KIOSK === '1';
+  const fullscreen = 'FULLSCREEN' in env || 'KIOSK' in env
+    ? fsEnv
+    : s.fullscreen !== undefined ? s.fullscreen : false;
+  const kiosk = 'KIOSK' in env
+    ? kioskEnv
+    : s.kiosk !== undefined ? s.kiosk : false;
+
   return {
-    load: env.LOAD_URL || d.load,
-    display: env.DISPLAY_URL || d.display,
-    title: env.TITLE || d.title,
-    favicon: env.FAVICON || d.favicon,
-    secure: env.SECURE !== '0',
-    fullscreen: env.FULLSCREEN === '1' || env.KIOSK === '1',
-    kiosk: env.KIOSK === '1',
-    width: positiveIntOr(env.WIDTH, d.width),
-    height: positiveIntOr(env.HEIGHT, d.height),
+    load,
+    display,
+    title,
+    favicon,
+    secure,
+    fullscreen,
+    kiosk,
+    width: positiveIntOr(env.WIDTH, s.width || d.width),
+    height: positiveIntOr(env.HEIGHT, s.height || d.height),
   };
 }

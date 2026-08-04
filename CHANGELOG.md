@@ -13,7 +13,10 @@ All notable changes to this project are documented here. The format follows
 - Pure `src/` logic (URL parsing, favicon detection, config, Enter-key semantics) under 100%
   test coverage.
 - Environment-variable configuration (`LOAD_URL`, `DISPLAY_URL`, `TITLE`, `FAVICON`, `SECURE`,
-  `FULLSCREEN`, `KIOSK`, `WIDTH`, `HEIGHT`).
+  `FULLSCREEN`, `KIOSK`, `BORDERLESS`, `WIDTH`, `HEIGHT`).
+- **Borderless mode** (`--borderless` / `BORDERLESS=1`): drops our own chrome and loads the page
+  full-window so it can draw its own frame — e.g. the Kali window mockup's native-looking border,
+  with no second border to give the prop away. `--url` and `--screenshot` CLI flags added.
 - CI (lint + format + 100% coverage gate), MkDocs → Pages, and a tag-driven multi-OS release
   workflow (electron-builder).
 

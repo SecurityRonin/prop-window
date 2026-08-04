@@ -61,7 +61,43 @@ notarized distribution builds are deferred (see CHANGELOG).
 | `SECURE`           | `0` → "Not secure"; else padlock             | padlock                   |
 | `FULLSCREEN`       | `1` → fullscreen (only our chrome on camera) | off                       |
 | `KIOSK`            | `1` → kiosk (no escape chrome)               | off                       |
+| `BORDERLESS`       | `1` → drop our chrome; page draws its frame  | off                       |
 | `WIDTH` / `HEIGHT` | windowed size                                | `1440` × `900`            |
+
+## Borderless mode (the page draws its own frame)
+
+By default the app draws a Chrome-style toolbar and fake address bar. **Borderless**
+drops all of that — no toolbar, no BrowserView — and loads the page straight into a
+single frameless window, so the _page_ supplies the frame. Use it when the content
+already looks like a native window and a second border would give the prop away — e.g.
+the [Kali window mockup](https://hacker-film-mockup.vercel.app/mockups/kali-window.html),
+which draws a Kali 2026.2 window decoration around any inner mockup.
+
+```bash
+npm start -- --borderless \
+  --url "https://hacker-film-mockup.vercel.app/mockups/kali-window.html?app=osint-nexus-graph.html&title=NEXUS%20OSINT"
+```
+
+CLI flags (override env/scene):
+
+| Flag                | Meaning                                        |
+| ------------------- | ---------------------------------------------- |
+| `--borderless`      | drop our chrome (same as `BORDERLESS=1`)       |
+| `--url <url>`       | page to load (same as `LOAD_URL`)              |
+| `--screenshot <p>`  | render, capture the window to `<p>.png`, quit  |
+
+A packaged Windows `.exe` launches the same way — pass the flags in the shortcut's
+_Target_:
+
+```
+prop-browser.exe --borderless --url "https://…/kali-window.html?app=osint-nexus-graph.html&title=NEXUS%20OSINT"
+```
+
+> **Behind auth?** If the live URL sits behind Vercel deployment protection (Basic
+> auth), the operator gets a login prompt instead of the mockup. Make the specific
+> mockup path public, disable protection for that project, or append a
+> protection-bypass token — the borderless window has no chrome to type credentials
+> into cleanly on camera.
 
 ## On-set controls
 

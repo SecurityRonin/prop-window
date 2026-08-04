@@ -4,7 +4,7 @@ const INT_FIELDS = ['width', 'height'];
 const ALL_FIELDS = new Set([...STRING_FIELDS, ...BOOL_FIELDS, ...INT_FIELDS]);
 
 export function parseScene(raw) {
-  if (raw == null || typeof raw !== 'object' || Array.isArray(raw)) {
+  if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) {
     throw new TypeError('Scene must be a plain object');
   }
 

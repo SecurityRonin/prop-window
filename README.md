@@ -80,11 +80,11 @@ npm start -- --borderless \
 
 CLI flags (override env/scene):
 
-| Flag                | Meaning                                        |
-| ------------------- | ---------------------------------------------- |
-| `--borderless`      | drop our chrome (same as `BORDERLESS=1`)       |
-| `--url <url>`       | page to load (same as `LOAD_URL`)              |
-| `--screenshot <p>`  | render, capture the window to `<p>.png`, quit  |
+| Flag               | Meaning                                       |
+| ------------------ | --------------------------------------------- |
+| `--borderless`     | drop our chrome (same as `BORDERLESS=1`)      |
+| `--url <url>`      | page to load (same as `LOAD_URL`)             |
+| `--screenshot <p>` | render, capture the window to `<p>.png`, quit |
 
 A packaged Windows `.exe` launches the same way — pass the flags in the shortcut's
 _Target_:

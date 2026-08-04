@@ -112,7 +112,11 @@ describe('parseConfig', () => {
 
   describe('scene overrides', () => {
     it('scene fields override injected defaults', () => {
-      const scene = { loadUrl: 'http://mock:3000', displayUrl: 'https://brand.com', title: 'Brand' };
+      const scene = {
+        loadUrl: 'http://mock:3000',
+        displayUrl: 'https://brand.com',
+        title: 'Brand',
+      };
       const cfg = parseConfig({}, {}, scene);
       expect(cfg.load).toBe('http://mock:3000');
       expect(cfg.display).toBe('https://brand.com');
@@ -152,6 +156,10 @@ describe('parseConfig', () => {
     it('works with no scene (backwards compatible)', () => {
       const cfg = parseConfig({}, {});
       expect(cfg.display).toBe('https://www.example.com');
+    });
+
+    it('tolerates an explicit null scene', () => {
+      expect(parseConfig({}, {}, null).display).toBe('https://www.example.com');
     });
   });
 

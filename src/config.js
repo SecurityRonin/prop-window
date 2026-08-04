@@ -43,6 +43,13 @@ export function parseConfig(env = {}, defaults = {}, scene = {}) {
     ? kioskEnv
     : s.kiosk !== undefined ? s.kiosk : false;
 
+  // Borderless drops all of our own chrome (toolbar + fake address bar) so the
+  // page can supply its own frame — e.g. the Kali window mockup drawing a single
+  // native-looking border. Same env-over-scene-over-default precedence as kiosk.
+  const borderless = 'BORDERLESS' in env
+    ? env.BORDERLESS === '1'
+    : s.borderless !== undefined ? s.borderless : false;
+
   return {
     load,
     display,
@@ -51,6 +58,7 @@ export function parseConfig(env = {}, defaults = {}, scene = {}) {
     secure,
     fullscreen,
     kiosk,
+    borderless,
     width: positiveIntOr(env.WIDTH, s.width || d.width),
     height: positiveIntOr(env.HEIGHT, s.height || d.height),
   };

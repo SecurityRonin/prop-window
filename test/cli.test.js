@@ -7,7 +7,23 @@ describe('parseCli', () => {
 
   it('returns defaults when no extra args are given', () => {
     const cli = parseCli([electron, app]);
-    expect(cli).toEqual({ sceneFile: null, screenshot: null });
+    expect(cli).toEqual({ sceneFile: null, screenshot: null, borderless: false, url: null });
+  });
+
+  it('parses --borderless', () => {
+    expect(parseCli([electron, app, '--borderless']).borderless).toBe(true);
+  });
+
+  it('parses --url with a following value', () => {
+    expect(parseCli([electron, app, '--url', 'https://x/y?z=1']).url).toBe('https://x/y?z=1');
+  });
+
+  it('parses --url=value (equals form)', () => {
+    expect(parseCli([electron, app, '--url=https://x/y?z=1']).url).toBe('https://x/y?z=1');
+  });
+
+  it('does not treat the --url value as a scene file', () => {
+    expect(parseCli([electron, app, '--url', 'https://x/y']).sceneFile).toBeNull();
   });
 
   it('picks up a positional .json file as the scene', () => {

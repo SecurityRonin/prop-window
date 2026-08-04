@@ -11,6 +11,7 @@ describe('parseConfig', () => {
       secure: true,
       fullscreen: false,
       kiosk: false,
+      borderless: false,
       width: 1440,
       height: 900,
     });
@@ -90,6 +91,22 @@ describe('parseConfig', () => {
     });
     it('FULLSCREEN=0 is not fullscreen', () => {
       expect(parseConfig({ FULLSCREEN: '0' }).fullscreen).toBe(false);
+    });
+  });
+
+  describe('borderless', () => {
+    it('defaults to false', () => {
+      expect(parseConfig({}).borderless).toBe(false);
+    });
+    it('is true only for BORDERLESS=1', () => {
+      expect(parseConfig({ BORDERLESS: '1' }).borderless).toBe(true);
+      expect(parseConfig({ BORDERLESS: '0' }).borderless).toBe(false);
+    });
+    it('takes borderless from the scene', () => {
+      expect(parseConfig({}, {}, { borderless: true }).borderless).toBe(true);
+    });
+    it('env overrides the scene', () => {
+      expect(parseConfig({ BORDERLESS: '0' }, {}, { borderless: true }).borderless).toBe(false);
     });
   });
 

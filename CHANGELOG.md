@@ -8,8 +8,16 @@ All notable changes to this project are documented here. The format follows
 
 ### Deferred
 
-- **Windows Authenticode** signing — release `.exe` is currently unsigned.
 - **Homebrew Cask** auto-publish to a personal tap (recipe documented; tap repo pending).
+
+## [0.2.1] - 2026-08-04
+
+### Added
+
+- **Windows Authenticode signing** via Azure Trusted Signing under verified publisher
+  **Security Ronin Ltd** — keyless through GitHub OIDC (no cert file, no client secret). The
+  released `prop-window.Setup.<ver>.exe` installer is signed, so it clears SmartScreen's
+  unknown-publisher block. (The app's inner exe, packed by electron-builder, is not yet signed.)
 
 ## [0.2.0] - 2026-08-04
 

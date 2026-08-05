@@ -4,7 +4,13 @@
 # macOS signing + notarization (the timeglyph model) is GATED on the MACOS_*
 # secrets: the app ships UNSIGNED until they exist, then the next release
 # Developer-ID-signs + notarizes + staples the .app automatically. See
-# docs/macos-signing.md. (Windows Authenticode is still deferred — see CHANGELOG.)
+# docs/macos-signing.md.
+#
+# Windows Authenticode signing (also the timeglyph model) is via Azure Trusted
+# Signing under "Security Ronin Ltd", keyless through GitHub OIDC — no cert file,
+# no client secret. The AZURE_* org secrets are visibility=all and the fleet
+# federated credential wildcards repo:SecurityRonin/*:environment:release, so the
+# only per-repo requirement is the `release` environment (set on the build job).
 #
 # Distribution fan-out (Homebrew Cask / apt-Cloudsmith / winget) is wired below
 # but DORMANT until these prerequisites exist — each is gated by a secret and an
@@ -28,12 +34,25 @@ on:
 permissions:
   contents: write
 
-# Presence flag: the macOS signing path runs only once the cert secret is set.
+# Presence flags: signing paths run only once the relevant secrets exist, so a
+# release stays green before signing is provisioned.
+#   HAS_MACOS_SIGNING   → Apple Developer ID cert (see docs/macos-signing.md)
+#   HAS_WINDOWS_SIGNING → Azure Trusted Signing (AZURE_* org secrets, visibility=all)
 env:
   HAS_MACOS_SIGNING: ${{ secrets.MACOS_CERT_P12_BASE64 != '' }}
+  HAS_WINDOWS_SIGNING: ${{ secrets.AZURE_CLIENT_ID != '' }}
 
 jobs:
   build:
+    # 'release' environment → the GitHub OIDC token's subject becomes
+    # repo:SecurityRonin/prop-window:environment:release, which the fleet Azure
+    # federated credential matches (claims['sub'] matches
+    # 'repo:SecurityRonin/*:environment:release'). id-token:write lets the Windows
+    # leg mint that token so azure/login can trade it for the signing session.
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -68,6 +87,34 @@ jobs:
           else
             npx electron-builder --publish never
           fi
+
+      # OIDC login to Azure FIRST: the trusted-signing-action rides the session
+      # this establishes (it does not do the GitHub→Azure token exchange itself).
+      - name: Azure login (OIDC)
+        if: runner.os == 'Windows' && env.HAS_WINDOWS_SIGNING == 'true'
+        uses: azure/login@93381592711f247e165c389ebb30b596c84cdc48 # v3.0.0
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Authenticode-sign the NSIS installer (verified publisher Security Ronin
+      # Ltd) so the downloaded prop-window.Setup.<ver>.exe clears SmartScreen's
+      # unknown-publisher block. Values + gotchas: ronin-issen §"Windows code
+      # signing". (The app's inner exe is packed by electron-builder and stays
+      # unsigned; the installer is the SmartScreen-gated artifact.)
+      - name: Sign Windows installer (Azure Trusted Signing)
+        if: runner.os == 'Windows' && env.HAS_WINDOWS_SIGNING == 'true'
+        uses: azure/trusted-signing-action@208f8af4bf26cf2af8597424e3cb5582801523ba # v2.0.0
+        with:
+          endpoint: https://neu.codesigning.azure.net
+          trusted-signing-account-name: securityronin
+          certificate-profile-name: securityronin-public
+          files-folder: dist
+          files-folder-filter: exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:

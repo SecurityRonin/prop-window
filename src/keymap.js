@@ -1,4 +1,4 @@
-// Address-bar Enter semantics for the prop browser.
+// Address-bar Enter semantics for the prop window.
 
 /**
  * Classify an Enter keypress on the address bar:

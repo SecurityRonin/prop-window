@@ -56,7 +56,7 @@ base64 -i AuthKey_XXXX.p8 | pbcopy     # → MACOS_NOTARY_KEY_P8_BASE64
 
 ## What the CI does (macOS leg, per release)
 
-1. `electron-builder` builds `prop-browser.app`, signs it with the **Developer ID Application**
+1. `electron-builder` builds `prop-window.app`, signs it with the **Developer ID Application**
    cert (hardened runtime + `build/entitlements.mac.plist`).
 2. Submits it to Apple with `notarytool` (App Store Connect API key) and **waits** (~1–5 min).
 3. **Staples** the notarization ticket so Gatekeeper passes even offline.
@@ -64,7 +64,7 @@ base64 -i AuthKey_XXXX.p8 | pbcopy     # → MACOS_NOTARY_KEY_P8_BASE64
 
 ## Distribution (Homebrew Cask)
 
-Once notarized, ship it as a Cask so `brew install --cask h4x0r/tap/prop-browser` drops the app
+Once notarized, ship it as a Cask so `brew install --cask h4x0r/tap/prop-window` drops the app
 straight into `/Applications` with a working icon. Create a `h4x0r/homebrew-tap` repo with a
-`Casks/prop-browser.rb` pointing at the release `.dmg` + its SHA256. (An unsigned cask is
+`Casks/prop-window.rb` pointing at the release `.dmg` + its SHA256. (An unsigned cask is
 Gatekeeper-blocked — hence signing is the prerequisite above.)

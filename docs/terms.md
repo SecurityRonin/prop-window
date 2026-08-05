@@ -2,8 +2,8 @@
 
 _Last updated: 2026-07-30_
 
-prop-browser is free, open-source software licensed under the
-[Apache License 2.0](https://github.com/h4x0r/prop-browser/blob/main/LICENSE). Your use of it is
+prop-window is free, open-source software licensed under the
+[Apache License 2.0](https://github.com/h4x0r/prop-window/blob/main/LICENSE). Your use of it is
 governed by that license.
 
 ## As-is, no warranty
@@ -13,7 +13,7 @@ the Apache License 2.0. You use it at your own risk.
 
 ## Intended use
 
-prop-browser is a prop and demonstration tool for showing a chosen URL on screen while displaying
+prop-window is a prop and demonstration tool for showing a chosen URL on screen while displaying
 content you control — for filmmaking, mock-ups, and presentations. It performs no network
 deception: the address bar is a rendered widget, not a forged network response.
 

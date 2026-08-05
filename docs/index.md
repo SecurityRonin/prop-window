@@ -1,8 +1,8 @@
-# prop-browser
+# prop-window
 
-**A film prop browser: put any URL on camera, no matter where the page comes from.**
+**A film prop window: put any URL on camera, no matter where the page comes from.**
 
-prop-browser is a small [Electron](https://www.electronjs.org/) app — real Chromium — with a
+prop-window is a small [Electron](https://www.electronjs.org/) app — real Chromium — with a
 Chrome-style toolbar drawn in HTML. The address bar shows whatever you set, decoupled from the
 page actually loaded, so a shot can read `https://www.yourfilm.example` with a padlock while the
 content is served from a local mock or a live site.
@@ -10,8 +10,8 @@ content is served from a local mock or a live site.
 ## Quick start
 
 ```bash
-git clone https://github.com/h4x0r/prop-browser
-cd prop-browser && npm install
+git clone https://github.com/h4x0r/prop-window
+cd prop-window && npm install
 
 DISPLAY_URL="https://www.peanutforum.com/thread/48213" \
 LOAD_URL="http://localhost:8234/forum.html" \
@@ -20,7 +20,7 @@ FULLSCREEN=1 npm start
 
 ## Configuration
 
-Everything is set by environment variables — see the [README](https://github.com/h4x0r/prop-browser#configure-per-shot-environment-variables)
+Everything is set by environment variables — see the [README](https://github.com/h4x0r/prop-window#configure-per-shot-environment-variables)
 for the full table (`LOAD_URL`, `DISPLAY_URL`, `TITLE`, `FAVICON`, `SECURE`, `FULLSCREEN`,
 `KIOSK`, `WIDTH`, `HEIGHT`).
 

@@ -1,19 +1,19 @@
-# prop-browser
+# prop-window
 
-[![CI](https://github.com/h4x0r/prop-browser/actions/workflows/ci.yml/badge.svg)](https://github.com/h4x0r/prop-browser/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/h4x0r/prop-browser/actions/workflows/ci.yml)
+[![CI](https://github.com/h4x0r/prop-window/actions/workflows/ci.yml/badge.svg)](https://github.com/h4x0r/prop-window/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/h4x0r/prop-window/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Sponsor](https://img.shields.io/badge/Sponsor-h4x0r-ea4aaa?logo=githubsponsors)](https://github.com/sponsors/h4x0r)
 
-**A film prop browser: put any URL on camera, no matter where the page comes from.**
+**A film prop window: put any URL on camera, no matter where the page comes from.**
 
 Real Chromium (Electron), with a Chrome-style chrome we draw ourselves — so the address
 bar shows whatever you tell it, fully decoupled from the page actually loaded. Point it at
 a local mock or a live site; the bar reads `https://www.yourfilm.example` with a padlock.
 
 ```bash
-git clone https://github.com/h4x0r/prop-browser
-cd prop-browser && npm install
+git clone https://github.com/h4x0r/prop-window
+cd prop-window && npm install
 
 # Load any content, show any URL on camera:
 DISPLAY_URL="https://www.peanutforum.com/thread/48213" \
@@ -90,7 +90,7 @@ A packaged Windows `.exe` launches the same way — pass the flags in the shortc
 _Target_:
 
 ```
-prop-browser.exe --borderless --url "https://…/kali-window.html?app=osint-nexus-graph.html&title=NEXUS%20OSINT"
+prop-window.exe --borderless --url "https://…/kali-window.html?app=osint-nexus-graph.html&title=NEXUS%20OSINT"
 ```
 
 > **Behind auth?** If the live URL sits behind Vercel deployment protection (Basic
@@ -123,4 +123,4 @@ Use it for filming and demos.
 
 ---
 
-[Privacy Policy](https://h4x0r.github.io/prop-browser/privacy/) · [Terms of Service](https://h4x0r.github.io/prop-browser/terms/) · © 2026 Albert Hui
+[Privacy Policy](https://h4x0r.github.io/prop-window/privacy/) · [Terms of Service](https://h4x0r.github.io/prop-window/terms/) · © 2026 Albert Hui

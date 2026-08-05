@@ -1,4 +1,4 @@
-// Parse the prop browser's runtime configuration from environment variables,
+// Parse the prop window's runtime configuration from environment variables,
 // with injectable defaults (kept pure so it is unit-testable — the Electron main
 // process injects the on-disk default LOAD_URL/window size).
 

@@ -1,5 +1,5 @@
-appId: dev.h4x0r.prop-browser
-productName: prop-browser
+appId: dev.h4x0r.prop-window
+productName: prop-window
 copyright: © 2026 Albert Hui
 directories:
   output: dist

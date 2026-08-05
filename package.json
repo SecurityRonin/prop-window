@@ -1,19 +1,19 @@
 {
-  "name": "prop-browser",
+  "name": "prop-window",
   "version": "0.1.0",
   "private": true,
-  "description": "A film prop browser — real Chromium (Electron) whose address bar shows any URL you set, fully decoupled from the page it loads.",
+  "description": "A film prop window — real Chromium (Electron) whose address bar shows any URL you set, fully decoupled from the page it loads.",
   "type": "module",
   "main": "electron/main.js",
   "author": "Albert Hui <albert.hui@gmail.com>",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/SecurityRonin/prop-browser",
+  "homepage": "https://github.com/SecurityRonin/prop-window",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SecurityRonin/prop-browser.git"
+    "url": "https://github.com/SecurityRonin/prop-window.git"
   },
   "bugs": {
-    "url": "https://github.com/SecurityRonin/prop-browser/issues"
+    "url": "https://github.com/SecurityRonin/prop-window/issues"
   },
   "engines": {
     "node": ">=20"

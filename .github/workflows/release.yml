@@ -10,9 +10,9 @@
 # but DORMANT until these prerequisites exist — each is gated by a secret and an
 # external feed/repo that must be created FIRST:
 #   - secrets.TAP_GITHUB_TOKEN   + SecurityRonin/homebrew-tap with a
-#                                  Casks/prop-browser.rb and an `update-prop-browser`
+#                                  Casks/prop-window.rb and an `update-prop-window`
 #                                  repository_dispatch handler.
-#   - secrets.CLOUDSMITH_API_KEY + a Cloudsmith repo `securityronin/prop-browser`
+#   - secrets.CLOUDSMITH_API_KEY + a Cloudsmith repo `securityronin/prop-window`
 #                                  (must be created or the push 404s).
 #   - secrets.WINGET_TOKEN       + the package bootstrapped in winget-pkgs
 #                                  (first submission is a manual PR) and a
@@ -122,7 +122,7 @@ jobs:
             artifacts/checksums.txt
           generate_release_notes: true
 
-      # Homebrew Cask: notify the tap to refresh Casks/prop-browser.rb for this
+      # Homebrew Cask: notify the tap to refresh Casks/prop-window.rb for this
       # version. GUI app → Cask (installs the .dmg to /Applications), not a Formula.
       # The .dmg must be notarized or Gatekeeper blocks it on install.
       - name: Dispatch to homebrew tap
@@ -131,7 +131,7 @@ jobs:
         with:
           token: ${{ secrets.TAP_GITHUB_TOKEN }}
           repository: SecurityRonin/homebrew-tap
-          event-type: update-prop-browser
+          event-type: update-prop-window
           client-payload: '{"version": "${{ github.ref_name }}"}'
 
   # winget: update the package with the new Windows NSIS .exe installer.
@@ -145,13 +145,13 @@ jobs:
     steps:
       - uses: vedantmgoyal9/winget-releaser@4ffc7888bffd451b357355dc214d43bb9f23917e # v2
         with:
-          identifier: SecurityRonin.prop-browser
+          identifier: SecurityRonin.prop-window
           fork-user: securityronin-bot
           installers-regex: '\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}
 
   # apt: push the .deb from the Linux build to a Cloudsmith apt repo so users can
-  # `apt install prop-browser` after adding the repo. Gated on CLOUDSMITH_API_KEY.
+  # `apt install prop-window` after adding the repo. Gated on CLOUDSMITH_API_KEY.
   cloudsmith:
     needs: release
     runs-on: ubuntu-latest
@@ -174,5 +174,5 @@ jobs:
         run: |
           for deb in debs/*.deb; do
             [ -f "$deb" ] || continue
-            cloudsmith push deb securityronin/prop-browser/any-distro/any-version "$deb"
+            cloudsmith push deb securityronin/prop-window/any-distro/any-version "$deb"
           done

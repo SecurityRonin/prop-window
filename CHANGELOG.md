@@ -8,7 +8,7 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
-- Initial prop browser: real Chromium (Electron) with a self-drawn Chrome chrome whose address
+- Initial prop window: real Chromium (Electron) with a self-drawn Chrome chrome whose address
   bar is decoupled from the loaded page.
 - Pure `src/` logic (URL parsing, favicon detection, config, Enter-key semantics) under 100%
   test coverage.

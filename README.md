@@ -1,7 +1,7 @@
 # prop-window
 
-[![CI](https://github.com/h4x0r/prop-window/actions/workflows/ci.yml/badge.svg)](https://github.com/h4x0r/prop-window/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/h4x0r/prop-window/actions/workflows/ci.yml)
+[![CI](https://github.com/SecurityRonin/prop-window/actions/workflows/ci.yml/badge.svg)](https://github.com/SecurityRonin/prop-window/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/SecurityRonin/prop-window/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Sponsor](https://img.shields.io/badge/Sponsor-h4x0r-ea4aaa?logo=githubsponsors)](https://github.com/sponsors/h4x0r)
 
@@ -12,7 +12,7 @@ bar shows whatever you tell it, fully decoupled from the page actually loaded. P
 a local mock or a live site; the bar reads `https://www.yourfilm.example` with a padlock.
 
 ```bash
-git clone https://github.com/h4x0r/prop-window
+git clone https://github.com/SecurityRonin/prop-window
 cd prop-window && npm install
 
 # Load any content, show any URL on camera:
@@ -123,4 +123,4 @@ Use it for filming and demos.
 
 ---
 
-[Privacy Policy](https://h4x0r.github.io/prop-window/privacy/) · [Terms of Service](https://h4x0r.github.io/prop-window/terms/) · © 2026 Albert Hui
+[Privacy Policy](https://securityronin.github.io/prop-window/privacy/) · [Terms of Service](https://securityronin.github.io/prop-window/terms/) · © 2026 Security Ronin Ltd

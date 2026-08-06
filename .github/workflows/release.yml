@@ -84,7 +84,12 @@ jobs:
             npx electron-builder --mac --publish never -c.mac.notarize=false -c.mac.identity=null
           elif [ "$RUNNER_OS" = "macOS" ]; then
             npx electron-builder --mac --publish never
+          elif [ "$RUNNER_OS" = "Windows" ] && [ "$HAS_WINDOWS_SIGNING" = "true" ]; then
+            # Two-phase: build the UNPACKED app first so its exe can be Authenticode-
+            # signed BEFORE it is packed into the NSIS installer (packed + signed below).
+            npx electron-builder --win --dir --publish never
           else
+            # Windows unsigned, or Linux → build the installer(s) directly.
             npx electron-builder --publish never
           fi
 
@@ -98,11 +103,33 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # Authenticode-sign the NSIS installer (verified publisher Security Ronin
-      # Ltd) so the downloaded prop-window.Setup.<ver>.exe clears SmartScreen's
-      # unknown-publisher block. Values + gotchas: ronin-issen §"Windows code
-      # signing". (The app's inner exe is packed by electron-builder and stays
-      # unsigned; the installer is the SmartScreen-gated artifact.)
+      # Sign the UNPACKED app exe(s) (verified publisher Security Ronin Ltd) BEFORE
+      # packing, so the installed prop-window.exe itself carries the signature — not
+      # just the installer. Recurse to catch any nested packaged exe.
+      - name: Sign inner app exe (Azure Trusted Signing)
+        if: runner.os == 'Windows' && env.HAS_WINDOWS_SIGNING == 'true'
+        uses: azure/trusted-signing-action@208f8af4bf26cf2af8597424e3cb5582801523ba # v2.0.0
+        with:
+          endpoint: https://neu.codesigning.azure.net
+          trusted-signing-account-name: securityronin
+          certificate-profile-name: securityronin-public
+          files-folder: dist/win-unpacked
+          files-folder-filter: exe
+          files-folder-recurse: true
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      # Pack the NSIS installer from the already-signed unpacked app.
+      - name: Pack Windows installer
+        if: runner.os == 'Windows' && env.HAS_WINDOWS_SIGNING == 'true'
+        run: npx electron-builder --win --prepackaged dist/win-unpacked --publish never
+
+      # Authenticode-sign the installer itself so the downloaded
+      # prop-window.Setup.<ver>.exe also clears SmartScreen's unknown-publisher
+      # block. Non-recursive → signs only dist/*.exe (the installer), leaving the
+      # already-signed dist/win-unpacked/*.exe untouched. Values + gotchas:
+      # ronin-issen §"Windows code signing".
       - name: Sign Windows installer (Azure Trusted Signing)
         if: runner.os == 'Windows' && env.HAS_WINDOWS_SIGNING == 'true'
         uses: azure/trusted-signing-action@208f8af4bf26cf2af8597424e3cb5582801523ba # v2.0.0
@@ -112,6 +139,7 @@ jobs:
           certificate-profile-name: securityronin-public
           files-folder: dist
           files-folder-filter: exe
+          files-folder-recurse: false
           file-digest: SHA256
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256

@@ -10,6 +10,22 @@ All notable changes to this project are documented here. The format follows
 
 - **Homebrew Cask** auto-publish to a personal tap (recipe documented; tap repo pending).
 
+## [0.2.2] - 2026-08-05
+
+### Added
+
+- **Inner app executable is now Authenticode-signed**, not just the installer. The Windows build
+  is two-phase: sign the unpacked `prop-window.exe`, then pack the NSIS installer and sign that
+  too — so the installed binary itself shows verified publisher Security Ronin Ltd.
+
+### Changed
+
+- Consolidated project ownership under **SecurityRonin**: README badges/links, docs, mkdocs, the
+  Homebrew-tap references, the copyright (© Security Ronin Ltd), and the electron-builder appId
+  (`dev.h4x0r.prop-window` → `dev.securityronin.prop-window`) now point to SecurityRonin. The
+  Sponsor badge stays `h4x0r` (personal). Note: the appId change means a fresh install rather than
+  an in-place upgrade from ≤ 0.2.1.
+
 ## [0.2.1] - 2026-08-04
 
 ### Added

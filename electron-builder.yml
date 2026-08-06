@@ -1,6 +1,6 @@
-appId: dev.h4x0r.prop-window
+appId: dev.securityronin.prop-window
 productName: prop-window
-copyright: © 2026 Albert Hui
+copyright: © 2026 Security Ronin Ltd
 directories:
   output: dist
   buildResources: build

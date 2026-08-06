@@ -3,7 +3,7 @@
 _Last updated: 2026-07-30_
 
 prop-window is free, open-source software licensed under the
-[Apache License 2.0](https://github.com/h4x0r/prop-window/blob/main/LICENSE). Your use of it is
+[Apache License 2.0](https://github.com/SecurityRonin/prop-window/blob/main/LICENSE). Your use of it is
 governed by that license.
 
 ## As-is, no warranty

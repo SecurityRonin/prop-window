@@ -10,7 +10,7 @@ content is served from a local mock or a live site.
 ## Quick start
 
 ```bash
-git clone https://github.com/h4x0r/prop-window
+git clone https://github.com/SecurityRonin/prop-window
 cd prop-window && npm install
 
 DISPLAY_URL="https://www.peanutforum.com/thread/48213" \
@@ -20,7 +20,7 @@ FULLSCREEN=1 npm start
 
 ## Configuration
 
-Everything is set by environment variables — see the [README](https://github.com/h4x0r/prop-window#configure-per-shot-environment-variables)
+Everything is set by environment variables — see the [README](https://github.com/SecurityRonin/prop-window#configure-per-shot-environment-variables)
 for the full table (`LOAD_URL`, `DISPLAY_URL`, `TITLE`, `FAVICON`, `SECURE`, `FULLSCREEN`,
 `KIOSK`, `WIDTH`, `HEIGHT`).
 

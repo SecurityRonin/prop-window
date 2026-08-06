@@ -1,7 +1,7 @@
 site_name: prop-window
-site_url: https://h4x0r.github.io/prop-window/
-repo_url: https://github.com/h4x0r/prop-window
-repo_name: h4x0r/prop-window
+site_url: https://securityronin.github.io/prop-window/
+repo_url: https://github.com/SecurityRonin/prop-window
+repo_name: SecurityRonin/prop-window
 edit_uri: edit/main/docs/
 
 theme:

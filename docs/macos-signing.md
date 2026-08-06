@@ -64,7 +64,7 @@ base64 -i AuthKey_XXXX.p8 | pbcopy     # → MACOS_NOTARY_KEY_P8_BASE64
 
 ## Distribution (Homebrew Cask)
 
-Once notarized, ship it as a Cask so `brew install --cask h4x0r/tap/prop-window` drops the app
-straight into `/Applications` with a working icon. Create a `h4x0r/homebrew-tap` repo with a
+Once notarized, ship it as a Cask so `brew install --cask securityronin/tap/prop-window` drops the app
+straight into `/Applications` with a working icon. Create a `SecurityRonin/homebrew-tap` repo with a
 `Casks/prop-window.rb` pointing at the release `.dmg` + its SHA256. (An unsigned cask is
 Gatekeeper-blocked — hence signing is the prerequisite above.)

@@ -15,4 +15,4 @@ prop-window is a desktop application that runs entirely on your own machine.
 Because there is no server and no data collection, there is nothing for us to share, sell, or
 disclose.
 
-Questions: open an issue at <https://github.com/h4x0r/prop-window/issues>.
+Questions: open an issue at <https://github.com/SecurityRonin/prop-window/issues>.
